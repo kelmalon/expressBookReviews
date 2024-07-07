@@ -82,15 +82,19 @@ public_users.get('/title/:title',function (req, res) {
 //  Get book review
 public_users.get('/review/:isbn', function (req, res) {
     const isbn = req.params.isbn;
-    console.log(`/review/:isbn request received with ISBN: ${isbn}`);
+    const review = req.body.review;
+    const username = req.body.username;
+
     const book = Object.values(books).find(book => book.ISBN === isbn);
-  
+
     if (book) {
-      console.log(`Reviews found: ${JSON.stringify(book.reviews)}`);
-      return res.send(JSON.stringify(book.reviews));
+        if (!book.reviews) {
+            book.reviews = [];
+        }
+        book.reviews.push({ username, review });
+        return res.status(200).json({ message: "Review successfully added.", reviews: book.reviews });
     } else {
-      console.log("Book reviews not found");
-      return res.status(404).json("Unable to find book reviews.");
+        return res.status(404).json({ message: "Unable to find book." });
     }
 });
 
