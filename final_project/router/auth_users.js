@@ -56,11 +56,19 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
     const username = req.body.username;
     const review = req.body.review;
 
-    const book = Object.values(books).find(book => book.ISBN === isbn);
+    const book = Object.values(books).find(book => book.ISBN == isbn);
+    
+    let existing_review;
 
     if (book) {
-        book.reviews.push({username, review});
-        return res.status(200).json({ message: "Review successfully added.", reviews: book.reviews });
+        existing_review = book.reviews.find(candidate_review => candidate_review.username == username);
+        if(existing_review){
+            existing_review.review = review;
+            return res.status(200).json({ message: "Review successfully edited.", reviews: book.reviews });
+        } else{
+            book.reviews.push({username, review});
+            return res.status(201).json({message: "Review successfully added."});
+        }
     } else {
         return res.status(404).json({message: "Unable to locate book."});
     }
