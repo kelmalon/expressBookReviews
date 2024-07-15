@@ -35,12 +35,11 @@ public_users.post("/register", (req,res) => {
 
 // Get the book list available in the shop
 public_users.get('/', async (req, res) => {
-    try {
-        const bookList = await Promise.resolve(books);  // Simulating an async operation
-        return res.json(bookList);
-    } catch {
-        return res.status(500).json({message: "Error retrieving book list."});
-    }
+    const get_books = new Promise((resolve, reject) => {
+        resolve(res.send(JSON.stringify({books}, null, 4)));
+    });
+
+    get_books.then(() => console.log("Promise for Task 10 completed"));
     //return res.status(300).json({message: "Yet to be implemented"});
 });
 
@@ -49,12 +48,15 @@ public_users.get('/isbn/:isbn', async (req, res) => {
     const isbn = req.params.isbn;
     const book = Object.values(books).find(book => book.ISBN === isbn);
 
-    if (book) {
-        return res.send(JSON.stringify(book));
-    } else {
-        return res.status(404).json("Unable to find book.");
-    }
+    const get_book_isbn = new Promise((resolve, reject) => {
+        if (book) {
+            resolve(res.send(JSON.stringify(book)));
+        } else {
+            reject(res.status(404).json("Unable to find book."));
+        }
+    });
 
+    get_book_isbn.then(() => console.log("Promise for Task 11 completed"));
     //return res.status(300).json({message: "Yet to be implemented"});
  });
   
@@ -63,11 +65,15 @@ public_users.get('/author/:author', async (req, res) => {
     const author = req.params.author;
     const booksByAuthor = Object.values(books).filter(book => book.author === author);
 
-    if (booksByAuthor.length > 0) {
-        return res.json(booksByAuthor);
-    } else {
-        return res.status(404).json("Unable to find book.");
-    }
+    const get_book_author = new Promise((resolve, reject) => {
+        if (booksByAuthor.length > 0) {
+            resolve(res.json(booksByAuthor));
+        } else {
+            reject(res.status(404).json("Unable to find book."));
+        }
+    });
+
+    get_book_author.then(() => console.log("Promise for Task 13 completed"));
     // return res.status(300).json({message: "Yet to be implemented"});
 });
 
@@ -76,11 +82,15 @@ public_users.get('/title/:title', async (req, res) => {
     const title = req.params.title;
     const booksByTitle = Object.values(books).filter(book => book.title === title);
 
-    if (booksByTitle.length > 0) {
-        return res.json(booksByTitle);
-    } else {
-        return res.status(404).json("Unable to find book.");
-    }
+    const get_book_title = new Promise((resolve, reject) => {
+        if (booksByTitle.length > 0) {
+            resolve(res.json(booksByTitle));
+        } else {
+            reject(res.status(404).json("Unable to find book."));
+        }
+    });
+    get_book_title.then(() => console.log("Promise for Task 13 completed"));
+
     //return res.status(300).json({message: "Yet to be implemented"});
 });
 
